@@ -19,7 +19,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ShopOnline.BLL\ShopOnline.BLL.csproj" />
     <ProjectReference Include="..\ShopOnline.DAL\ShopOnline.DAL.csproj" />
-    <ProjectReference Include="..\ShopOnline.BLL\ShopOnline.BLL.csproj" />
   </ItemGroup>
 
 </Project>
