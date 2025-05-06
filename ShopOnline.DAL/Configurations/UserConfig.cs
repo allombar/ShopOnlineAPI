@@ -1,14 +1,30 @@
 ﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
+using ShopOnline.DAL.Entities;
 
 namespace ShopOnline.DAL.Configurations
 {
-    class UserConfig
+    internal class UserConfig : IEntityTypeConfiguration<UserEntity>
     {
-        // TODO: Implémenter la configuration rapidement
+        public void Configure(EntityTypeBuilder<UserEntity> builder)
+        {
+            builder.ToTable("Users");
+
+            builder.Property(u => u.Username)
+                   .HasColumnType("NVARCHAR(100)");
+
+            builder.Property(u => u.Email)
+                   .HasColumnType("NVARCHAR(255)");
+
+            builder.Property(u => u.Password)
+                   .HasColumnType("NVARCHAR(255)");
+
+            builder.Property(u => u.Role)
+                   .HasColumnType("NVARCHAR(50)");
+
+            builder.HasIndex(u => u.Email)
+                    .HasDatabaseName("UK_Users_Email");
+        }
     }
 }

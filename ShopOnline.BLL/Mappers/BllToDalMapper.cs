@@ -15,6 +15,19 @@ namespace ShopOnline.BLL.Mappers
                 Role = user.Role
             };
         }
+
+        public static ProductEntity ToEntity(this Product product)
+        {
+            return new ProductEntity
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                PriceExclTax = product.PriceExclTax,
+                StockQuantity = product.StockQuantity,
+                CategoryId = product.CategoryId
+            };
+        }
         public static User ToModel(this UserEntity entity)
         {
             return new User

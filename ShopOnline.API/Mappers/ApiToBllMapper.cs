@@ -1,4 +1,5 @@
 ﻿using ShopOnline.API.Models.Auth;
+using ShopOnline.API.Models.Product;
 using ShopOnline.BLL.Models;
 
 namespace ShopOnline.API.Mappers
@@ -12,6 +13,18 @@ namespace ShopOnline.API.Mappers
                 Username = dto.Username,
                 Email = dto.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
+            };
+        }
+
+        public static Product ToBll(this ProductCreateRequest dto)
+        {
+            return new Product
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                PriceExclTax = dto.PriceExclTax,
+                StockQuantity = dto.StockQuantity,
+                CategoryId = dto.CategoryId
             };
         }
     }

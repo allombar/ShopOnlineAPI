@@ -21,7 +21,7 @@ namespace ShopOnline.API.Controllers
             _tokenManager = tokenManager;
         }
 
-        [HttpPost("register")]
+        [HttpPost(nameof(Register))]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -49,7 +49,7 @@ namespace ShopOnline.API.Controllers
             }
         }
 
-        [HttpPost("login")]
+        [HttpPost(nameof(Login))]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]

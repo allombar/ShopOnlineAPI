@@ -17,7 +17,7 @@ namespace ShopOnline.API
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -61,7 +61,10 @@ namespace ShopOnline.API
             });
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
 
             builder.Services.AddDbContext<ShopOnlineDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
 
@@ -75,9 +78,27 @@ namespace ShopOnline.API
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
                     ValidIssuer = builder.Configuration["Jwt:Issuer"],
                     ValidAudience = builder.Configuration["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse(); // empêche la réponse par défaut
+                        context.Response.StatusCode = 401;
+                        context.Response.ContentType = "application/json";
+                        return context.Response.WriteAsync("{\"errors\": \"Vous devez être authentifié pour accéder à cette ressource.\"}");
+                    },
+                    OnForbidden = context =>
+                    {
+                        context.Response.StatusCode = 403;
+                        context.Response.ContentType = "application/json";
+                        return context.Response.WriteAsync("{\"errors\": \"Vous n'avez pas les droits suffisants pour accéder à cette ressource.\"}");
+                    }
                 };
             });
 
@@ -92,8 +113,6 @@ namespace ShopOnline.API
             }
             app.UseDeveloperExceptionPage();
             app.UseHttpsRedirection();
-
-            app.UseAuthorization();
 
             app.UseAuthentication();
             app.UseAuthorization();

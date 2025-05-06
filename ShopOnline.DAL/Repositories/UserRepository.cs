@@ -1,6 +1,7 @@
 ﻿using ShopOnline.DAL.Entities;
 using Microsoft.Data.SqlClient;
 using ShopOnline.DAL.interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ShopOnline.DAL.Repositories
 {

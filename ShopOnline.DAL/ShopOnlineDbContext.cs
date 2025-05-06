@@ -7,6 +7,7 @@ namespace ShopOnline.DAL
     public class ShopOnlineDbContext : DbContext
     {
         public DbSet<UserEntity> User { get { return Set<UserEntity>(); } }
+        public DbSet<ProductEntity> Product { get { return Set<ProductEntity>(); } }
 
         public ShopOnlineDbContext(DbContextOptions<ShopOnlineDbContext> options) : base(options)
         {
