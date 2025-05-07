@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
 using ShopOnline.API.Mappers;
 using ShopOnline.API.Models.Auth;
 using ShopOnline.API.Services;
@@ -26,24 +27,21 @@ namespace ShopOnline.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public IActionResult Register([FromBody] RegisterRequest user)
+        public IActionResult Register([FromBody] RegisterRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                User? model = user.ToBll(); // DTO → BLL model
-
-                _userService.Register(model);
-
-                return Ok("L'utilisateur a bien été enregistré.");
+                _userService.Register(request.ToBll());
+                return Ok("Votre compte a été enregistré.");
             }
             catch (ArgumentException ex)
             {
                 return Conflict(ex.Message);
             }
-            catch (ApplicationException ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
@@ -54,26 +52,24 @@ namespace ShopOnline.API.Controllers
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public IActionResult Login([FromBody] LoginRequest loginRequest)
+        public IActionResult Login([FromBody] LoginRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                var user = _userService.Login(loginRequest.Email, loginRequest.Password);
-
+                User user = _userService.Login(request.Email, request.Password);
                 var token = _tokenManager.GenerateJwt(user.Id, user.Username, user.Role);
-
                 return Ok(new { token });
             }
             catch (ArgumentException ex)
             {
                 return Unauthorized(ex.Message);
             }
-            catch (ApplicationException ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, ex.Message); 
+                return StatusCode(500, ex.Message);
             }
         }
     }

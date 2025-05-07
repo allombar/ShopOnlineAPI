@@ -1,7 +1,6 @@
 ﻿using ShopOnline.DAL.Entities;
 using Microsoft.Data.SqlClient;
 using ShopOnline.DAL.interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace ShopOnline.DAL.Repositories
 {
@@ -20,31 +19,14 @@ namespace ShopOnline.DAL.Repositories
             _context.SaveChanges();
         }
 
-        public UserEntity GetByEmail(string email)
+        public UserEntity? GetByEmail(string email)
         {
-            UserEntity user = _context.User.FirstOrDefault(u => u.Email == email);
-
-            if (user is null)
-                throw new ArgumentNullException(nameof(email), "Email inexistant");
-
-            return user;
+            return _context.User.FirstOrDefault(u => u.Email == email);
         }
 
         public string GetPassword(string email)
         {
-            UserEntity user = _context.User.FirstOrDefault(u => u.Email == email);
-
-            if (user is null)
-            {
-                throw new ArgumentNullException(nameof(email), "Email inexistant");
-            }
-
-            if (string.IsNullOrEmpty(user.Password))
-            {
-                throw new ArgumentNullException(nameof(user.Password), "Mot de passe non défini");
-            }
-
-            return user.Password;
+            return GetByEmail(email)?.Password ?? throw new ArgumentException("Email introuvable.");
         }
     }
 }

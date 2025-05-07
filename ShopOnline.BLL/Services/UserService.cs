@@ -17,42 +17,23 @@ namespace ShopOnline.BLL.Services
 
         public void Register(User user)
         {
-            try
-            {
-                if (_repository.GetByEmail(user.Email) != null)
-                    throw new ArgumentException("Cet email est déjà utilisé.");
+            if (_repository.GetByEmail(user.Email) != null)
+                throw new ArgumentException("L'email est déjà utilisé.");
 
-                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            string hash = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            user.Password = hash;
 
-                _repository.Add(user.ToEntity());
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException($"Erreur lors de l'inscription : {ex.Message}", ex);
-            }
+            _repository.Add(user.ToEntity());
         }
 
         public User Login(string email, string password)
         {
-            try
-            {
-                string hash = _repository.GetPassword(email);
+            var entity = _repository.GetByEmail(email) ?? throw new ArgumentException("Email introuvable.");
 
-                if (!BCrypt.Net.BCrypt.Verify(password, hash))
-                    throw new ArgumentException("Mot de passe incorrect.");
+            if (!BCrypt.Net.BCrypt.Verify(password, entity.Password))
+                throw new ArgumentException("Mot de passe incorrect.");
 
-                UserEntity entity = _repository.GetByEmail(email);
-
-                return entity.ToModel();
-            }
-            catch (ArgumentException)
-            {
-                throw new ArgumentException("Email incorrect.");
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Erreur lors de la connexion.", ex);
-            }
+            return entity.ToModel();
         }
     }
 }

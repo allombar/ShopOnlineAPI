@@ -1,4 +1,5 @@
-﻿using ShopOnline.API.Models.Auth;
+﻿using Microsoft.JSInterop.Infrastructure;
+using ShopOnline.API.Models.Auth;
 using ShopOnline.API.Models.Product;
 using ShopOnline.BLL.Models;
 
@@ -12,7 +13,7 @@ namespace ShopOnline.API.Mappers
             {
                 Username = dto.Username,
                 Email = dto.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
+                Password = dto.Password
             };
         }
 
