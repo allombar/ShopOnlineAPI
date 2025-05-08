@@ -16,36 +16,48 @@ namespace ShopOnline.DAL.Repositories
             _context = context;
         }
 
-        public int Create(ProductEntity product)
-        {
-            _context.Product.Add(product);
-            _context.SaveChanges();
-            return product.Id;
-        }
-
-        public bool Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public IEnumerable<ProductEntity> GetAll()
         {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<ProductEntity> GetByCategory(int categoryId)
-        {
-            throw new NotImplementedException();
+            return _context.Product.ToList();
         }
 
         public ProductEntity? GetById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Product.Find(id);
         }
 
-        public bool Update(ProductEntity product)
+        public IEnumerable<ProductEntity> GetByCategoryId(int categoryId)
         {
-            throw new NotImplementedException();
+            return _context.Product
+                .Where(p => p.CategoryId == categoryId)
+                .ToList();
+        }
+
+        public void Add(ProductEntity product)
+        {
+            _context.Product.Add(product);
+            _context.SaveChanges();
+        }
+
+        public void Update(int id, ProductEntity product)
+        {
+            var existing = _context.Product.FirstOrDefault(p => p.Id == id);
+            if (existing is null)
+                throw new ArgumentException("Produit introuvable");
+
+            existing.Name = product.Name;
+            existing.Description = product.Description;
+            existing.PriceExclTax = product.PriceExclTax;
+            existing.StockQuantity = product.StockQuantity;
+            existing.CategoryId = product.CategoryId;
+
+            _context.SaveChanges();
+        }
+
+        public void Delete(ProductEntity product)
+        {
+            _context.Product.Remove(product);
+            _context.SaveChanges();
         }
     }
 }

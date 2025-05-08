@@ -25,5 +25,18 @@ namespace ShopOnline.BLL.Mappers
                 Name = entity.Name
             };
         }
+
+        public static Product ToBll(this ProductEntity entity)
+        {
+            return new Product
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Description = entity.Description,
+                PriceExclTax = entity.PriceExclTax,
+                StockQuantity = entity.StockQuantity,
+                CategoryId = entity.CategoryId
+            };
+        }
     }
 }

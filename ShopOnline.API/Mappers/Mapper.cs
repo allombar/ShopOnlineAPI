@@ -20,18 +20,6 @@ namespace ShopOnline.API.Mappers
                 Password = dto.Password
             };
         }
-
-        public static Product ToBll(this ProductCreateRequest dto)
-        {
-            return new Product
-            {
-                Name = dto.Name,
-                Description = dto.Description,
-                PriceExclTax = dto.PriceExclTax,
-                StockQuantity = dto.StockQuantity,
-                CategoryId = dto.CategoryId
-            };
-        }
         #endregion
 
         #region Category
@@ -66,6 +54,33 @@ namespace ShopOnline.API.Mappers
             return new Category
             {
                 Name = entity.Name
+            };
+        }
+        #endregion
+
+        #region Product
+        public static ProductResponse ToDto(this Product product)
+        {
+            return new ProductResponse
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                PriceExclTax = product.PriceExclTax,
+                StockQuantity = product.StockQuantity,
+                CategoryId = product.CategoryId
+            };
+        }
+
+        public static Product ToBll(this ProductRequest product)
+        {
+            return new Product
+            {
+                Name = product.Name,
+                Description = product.Description,
+                PriceExclTax = product.PriceExclTax,
+                StockQuantity = product.StockQuantity,
+                CategoryId = product.CategoryId
             };
         }
         #endregion

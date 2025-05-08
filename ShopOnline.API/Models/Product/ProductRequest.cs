@@ -2,7 +2,7 @@
 
 namespace ShopOnline.API.Models.Product
 {
-    public class ProductCreateRequest
+    public class ProductRequest
     {
         [Required]
         [StringLength(150, MinimumLength = 2)]

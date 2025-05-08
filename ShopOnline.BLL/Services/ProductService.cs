@@ -13,23 +13,51 @@ namespace ShopOnline.BLL.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _repository;
-        public ProductService(IProductRepository repository)
+        private readonly ICategoryRepository _categoryRepository;
+
+        public ProductService(IProductRepository repository, ICategoryRepository categoryRepository)
         {
             _repository = repository;
+            _categoryRepository = categoryRepository;
         }
 
-        public int Create(Product product)
+        public IEnumerable<Product> GetAll()
         {
-            if (string.IsNullOrWhiteSpace(product.Name))
-                throw new ArgumentException("Le nom du produit est requis.");
+            return _repository.GetAll().Select(p => p.ToBll());
+        }
 
-            if (product.PriceExclTax <= 0)
-                throw new ArgumentException("Le prix doit être strictement positif.");
+        public Product GetById(int id)
+        {
+            var entity = _repository.GetById(id);
+            if (entity == null) throw new ArgumentException("Produit introuvable");
+            return entity.ToBll();
+        }
 
-            if (product.StockQuantity < 0)
-                throw new ArgumentException("La quantité en stock ne peut pas être négative.");
+        public IEnumerable<Product> GetByCategoryId(int categoryId)
+        {
+            return _repository.GetByCategoryId(categoryId).Select(p => p.ToBll());
+        }
 
-            return _repository.Create(product.ToEntity());
+        public void Create(Product product)
+        {
+            if (!_categoryRepository.GetAll().Any(c => c.Id == product.CategoryId))
+                throw new ArgumentException("Catégorie invalide");
+
+            _repository.Add(product.ToEntity());
+        }
+
+        public void Update(int id, Product product)
+        {
+            _repository.Update(id, product.ToEntity());
+        }
+
+        public void Delete(int id)
+        {
+            var product = _repository.GetById(id);
+            if (product is null)
+                throw new InvalidOperationException("Produit introuvable.");
+
+            _repository.Delete(product);
         }
     }
 }

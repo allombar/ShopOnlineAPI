@@ -17,68 +17,76 @@ namespace ShopOnline.API.Controllers
             _productService = productService;
         }
 
-        //[HttpGet]
-        //public ActionResult<IEnumerable<ProductResponse>> GetAll()
-        //{
-        //    return Ok(_productService.GetAll());
-        //}
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var products = _productService.GetAll().Select(p => p.ToDto());
+            return Ok(products);
+        }
 
-        //[HttpGet("{id}")]
-        //public ActionResult<ProductResponse> GetById(int id)
-        //{
-        //    var product = _productService.GetById(id);
-        //    return product is null ? NotFound() : Ok(product);
-        //}
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            try
+            {
+                var product = _productService.GetById(id).ToDto();
+                return Ok(product);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
 
-        //[HttpGet("category/{categoryId}")]
-        //public ActionResult<IEnumerable<ProductResponse>> GetByCategory(int categoryId)
-        //{
-        //    return Ok(_productService.GetByCategory(categoryId));
-        //}
+        [HttpGet("category/{categoryId}")]
+        public IActionResult GetByCategory(int categoryId)
+        {
+            var products = _productService.GetByCategoryId(categoryId).Select(p => p.ToDto());
+            return Ok(products);
+        }
 
-        [HttpPost]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Create(ProductCreateRequest request)
+        [HttpPost]
+        public IActionResult Create([FromBody] ProductRequest dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            _productService.Create(dto.ToBll());
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, [FromBody] ProductRequest dto)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var id = _productService.Create(request.ToBll());
-
-                return CreatedAtAction(null/*nameof(GetById)*/, new { id }, null);
+                _productService.Update(id, dto.ToBll());
+                return CreatedAtAction(nameof(Get), new { id }, null);
             }
-            catch (ArgumentException ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message); // règle métier non respectée
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-            //return CreatedAtAction(nameof(GetById), new { id }, null);
         }
 
-        //[HttpPut("{id}")]
-        //[Authorize(Roles = "Admin")]
-        //public IActionResult Update(int id, ProductCreateRequest request)
-        //{
-        //    var result = _productService.Update(id, request);
-        //    return result ? NoContent() : NotFound();
-        //}
-
-        //[HttpDelete("{id}")]
-        //[Authorize(Roles = "Admin")]
-        //public IActionResult Delete(int id)
-        //{
-        //    var result = _productService.Delete(id);
-        //    return result ? NoContent() : NotFound();
-        //}
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                _productService.Delete(id);
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
     }
-
 }

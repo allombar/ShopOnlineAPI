@@ -9,6 +9,11 @@ namespace ShopOnline.BLL.interfaces
 {
     public interface IProductService
     {
-        int Create(Product product);
+        IEnumerable<Product> GetAll();
+        Product GetById(int id);
+        IEnumerable<Product> GetByCategoryId(int categoryId);
+        void Create(Product product);
+        void Update(int id, Product product);
+        void Delete(int id);
     }
 }
