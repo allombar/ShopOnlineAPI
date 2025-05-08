@@ -9,10 +9,20 @@ namespace ShopOnline.BLL.Mappers
         {
             return new User
             {
+                Id = entity.Id,
                 Username = entity.Username,
                 Email = entity.Email,
                 Password = entity.Password,
                 Role = entity.Role
+            };
+        }
+
+        public static Category ToBll(this CategoryEntity entity)
+        {
+            return new Category
+            {
+                Id = entity.Id,
+                Name = entity.Name
             };
         }
     }

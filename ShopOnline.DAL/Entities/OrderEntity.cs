@@ -17,6 +17,6 @@ namespace ShopOnline.DAL.Entities
         public int UserId { get; set; }
         public virtual UserEntity User { get; set; } = null!;
 
-        public ICollection<OrderProductEntity> OrderProducts { get; set; } = new List<OrderProductEntity>();
+        public virtual ICollection<OrderProductEntity> OrderProducts { get; set; } = new List<OrderProductEntity>();
     }
 }

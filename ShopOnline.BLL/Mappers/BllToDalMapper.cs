@@ -9,6 +9,7 @@ namespace ShopOnline.BLL.Mappers
         {
             return new UserEntity
             {
+                Id = user.Id,
                 Username = user.Username,
                 Email = user.Email,
                 Password = user.Password,
@@ -28,16 +29,14 @@ namespace ShopOnline.BLL.Mappers
                 CategoryId = product.CategoryId
             };
         }
-        public static User ToModel(this UserEntity entity)
+
+        public static CategoryEntity ToEntity(this Category category)
         {
-            return new User
+            return new CategoryEntity
             {
-                Username = entity.Username,
-                Email = entity.Email,
-                Password = entity.Password,
-                Role = entity.Role
+                Id = category.Id,
+                Name = category.Name
             };
         }
-
     }
 }

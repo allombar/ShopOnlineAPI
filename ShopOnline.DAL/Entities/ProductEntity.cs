@@ -13,8 +13,8 @@ namespace ShopOnline.DAL.Entities
         public int StockQuantity { get; set; }
 
         public int CategoryId { get; set; }
-        public CategoryEntity Category { get; set; } = null!;
+        public virtual CategoryEntity Category { get; set; } = null!;
 
-        public ICollection<OrderProductEntity> OrderProducts { get; set; } = new List<OrderProductEntity>();
+        public virtual ICollection<OrderProductEntity> OrderProducts { get; set; } = new List<OrderProductEntity>();
     }
 }
